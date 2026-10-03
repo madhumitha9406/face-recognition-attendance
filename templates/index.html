@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SmartFace | Attendance Dashboard</title>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="icon" type="image/svg+xml"
+          href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f172a'/%3E%3Cpath d='M20 18c0-3.3 2.7-6 6-6s6 2.7 6 6v2h-12v-2zm-6 6h24v18c0 7.7-6.3 14-14 14s-14-6.3-14-14V24zm8 8a4 4 0 1 0 8 0 4 4 0 0 0-8 0zm-2 10c2-2.7 5-4 8-4s6 1.3 8 4v2H20v-2z' fill='%23ffffff'/%3E%3C/svg%3E">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">
+                <i class="bi bi-person-bounding-box"></i>
+            </div>
+
+            <div>
+                <h2>SmartFace</h2>
+                <span>Attendance AI</span>
+            </div>
+        </div>
+
+        <nav>
+
+            <a href="{{ url_for('dashboard') }}" class="nav-item active">
+                <i class="bi bi-grid-1x2-fill"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="{{ url_for('recognition_page') }}" class="nav-item">
+                <i class="bi bi-camera-fill"></i>
+                <span>Face Recognition</span>
+            </a>
+
+            <a href="{{ url_for('students_page') }}" class="nav-item">
+                <i class="bi bi-people-fill"></i>
+                <span>Students</span>
+            </a>
+
+            <a href="{{ url_for('attendance_page') }}" class="nav-item">
+                <i class="bi bi-calendar-check-fill"></i>
+                <span>Attendance</span>
+            </a>
+
+            <a href="{{ url_for('reports_page') }}" class="nav-item">
+                <i class="bi bi-bar-chart-fill"></i>
+                <span>Reports</span>
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <a href="#" class="nav-item">
+                <i class="bi bi-gear-fill"></i>
+                <span>Settings</span>
+            </a>
+
+            <div class="admin-card">
+
+                <div class="avatar">
+                    A
+                </div>
+
+                <div>
+                    <strong>Admin</strong>
+                    <small>Administrator</small>
+                </div>
+
+                <i class="bi bi-three-dots"></i>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- Main Content -->
+    <main class="main">
+
+        <!-- Topbar -->
+        <header class="topbar">
+
+            <div>
+                <h1>Dashboard</h1>
+                <p>Welcome back, Admin 👋</p>
+            </div>
+
+            <div class="top-actions">
+
+                <div class="date-box">
+                    <i class="bi bi-calendar3"></i>
+                    <span id="currentDate"></span>
+                </div>
+
+                <button class="notification">
+                    <i class="bi bi-bell-fill"></i>
+                    <span></span>
+                </button>
+
+                <div class="profile">
+                    <div class="profile-avatar">A</div>
+                    <div>
+                        <strong>Admin</strong>
+                        <small>Administrator</small>
+                    </div>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- Statistics -->
+        <section class="stats-grid">
+
+            <div class="stat-card">
+
+                <div class="stat-icon students">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+
+                <div>
+                    <p>Total Students</p>
+                    <h2 id="students">120</h2>
+                    <span class="positive">
+                        <i class="bi bi-arrow-up"></i>
+                        8% this month
+                    </span>
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon present">
+                    <i class="bi bi-person-check-fill"></i>
+                </div>
+
+                <div>
+                    <p>Present Today</p>
+                    <h2 id="present">96</h2>
+                    <span class="positive">
+                        <i class="bi bi-arrow-up"></i>
+                        5% from yesterday
+                    </span>
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon absent">
+                    <i class="bi bi-person-x-fill"></i>
+                </div>
+
+                <div>
+                    <p>Absent Today</p>
+                    <h2 id="absent">24</h2>
+                    <span class="negative">
+                        <i class="bi bi-arrow-down"></i>
+                        3% from yesterday
+                    </span>
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon percentage">
+                    <i class="bi bi-graph-up-arrow"></i>
+                </div>
+
+                <div>
+                    <p>Attendance Rate</p>
+                    <h2><span id="percentage">80</span>%</h2>
+                    <span class="positive">
+                        <i class="bi bi-arrow-up"></i>
+                        Good attendance
+                    </span>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Main Grid -->
+        <section class="content-grid">
+
+            <!-- Attendance Chart -->
+            <div class="panel chart-panel">
+
+                <div class="panel-header">
+
+                    <div>
+                        <h3>Attendance Overview</h3>
+                        <p>Weekly attendance statistics</p>
+                    </div>
+
+                    <select id="period">
+                        <option>Last 7 Days</option>
+                        <option>Last 30 Days</option>
+                        <option>This Month</option>
+                    </select>
+
+                </div>
+
+                <div class="chart">
+
+                    <div class="chart-bars">
+
+                        <div class="bar-container">
+                            <div class="bar" style="height: 72%"></div>
+                            <span>Mon</span>
+                        </div>
+
+                        <div class="bar-container">
+                            <div class="bar" style="height: 85%"></div>
+                            <span>Tue</span>
+                        </div>
+
+                        <div class="bar-container">
+                            <div class="bar" style="height: 78%"></div>
+                            <span>Wed</span>
+                        </div>
+
+                        <div class="bar-container">
+                            <div class="bar" style="height: 91%"></div>
+                            <span>Thu</span>
+                        </div>
+
+                        <div class="bar-container">
+                            <div class="bar" style="height: 82%"></div>
+                            <span>Fri</span>
+                        </div>
+
+                        <div class="bar-container">
+                            <div class="bar" style="height: 88%"></div>
+                            <span>Sat</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Quick Actions -->
+            <div class="panel quick-panel">
+
+                <div class="panel-header">
+                    <div>
+                        <h3>Quick Actions</h3>
+                        <p>Manage your attendance</p>
+                    </div>
+                </div>
+
+
+                <button class="action-button recognition" id="startRecognitionBtn" type="button">
+
+                    <div class="action-icon">
+                        <i class="bi bi-camera-fill"></i>
+                    </div>
+
+                    <div>
+                        <strong>Start Recognition</strong>
+                        <small>Mark attendance using camera</small>
+                    </div>
+
+                    <i class="bi bi-chevron-right"></i>
+
+                </button>
+
+
+                <button class="action-button" id="addStudentDashboardBtn" type="button">
+
+                    <div class="action-icon">
+                        <i class="bi bi-person-plus-fill"></i>
+                    </div>
+
+                    <div>
+                        <strong>Add Student</strong>
+                        <small>Register a new student</small>
+                    </div>
+
+                    <i class="bi bi-chevron-right"></i>
+
+                </button>
+
+
+                <button class="action-button" id="downloadReportBtn" type="button">
+
+                    <div class="action-icon">
+                        <i class="bi bi-file-earmark-arrow-down-fill"></i>
+                    </div>
+
+                    <div>
+                        <strong>Download Report</strong>
+                        <small>Export attendance report</small>
+                    </div>
+
+                    <i class="bi bi-chevron-right"></i>
+
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- Recent Attendance -->
+        <section class="panel attendance-panel">
+
+            <div class="panel-header">
+
+                <div>
+                    <h3>Recent Attendance</h3>
+                    <p>Latest attendance records</p>
+                </div>
+
+                <button class="view-button">
+                    View All
+                    <i class="bi bi-arrow-right"></i>
+                </button>
+
+            </div>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Roll Number</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="attendanceTable">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- Footer -->
+        <footer>
+            <p>© 2026 SmartFace Attendance System</p>
+            <span>
+                Powered by AI & Face Recognition
+            </span>
+        </footer>
+
+    </main>
+
+</div>
+
+
+<!-- Recognition Modal -->
+<div class="modal" id="recognitionModal">
+
+    <div class="modal-content">
+
+        <button class="close-modal" onclick="closeRecognition()">
+            <i class="bi bi-x-lg"></i>
+        </button>
+
+        <div class="camera-icon">
+            <i class="bi bi-camera-video-fill"></i>
+        </div>
+
+        <h2>Face Recognition</h2>
+
+        <p>
+            Camera recognition module will be connected in Part 4.
+        </p>
+
+        <div class="camera-placeholder">
+            <i class="bi bi-camera"></i>
+            <span>Camera Preview</span>
+        </div>
+
+        <button class="start-camera">
+            <i class="bi bi-camera-fill"></i>
+            Start Camera
+        </button>
+
+    </div>
+
+</div>
+
+
+<script src="{{ url_for('static', filename='css/js/script.js') }}"></script>
+
+</body>
+</html>
